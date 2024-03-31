@@ -1,16 +1,34 @@
 {
-  "name": "nodejs-projects",
+  "name": "full-backend-zero",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "hoc backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "expresstest": "nodemon ./scr/helloworldwithexpress"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TuanBui978/nodejs_projects.git"
+  },
+  "keywords": [
+    "nodejs",
+    "react"
+  ],
+  "author": "tuan",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TuanBui978/nodejs_projects/issues"
+  },
+  "homepage": "https://github.com/TuanBui978/nodejs_projects#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
-    "express": "^4.18.3"
+    "express": "^4.18.3",
+    "express-validator": "^7.0.1",
+    "mysql2": "^3.9.2",
+    "nodemon": "^3.1.0"
   }
 }
