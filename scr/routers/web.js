@@ -1,17 +1,14 @@
-const { check, validationResult } = require('express-validator');
-const { getTuan, getImage, postRegisterUser, postLoginUser, test } = require('../controllers/homeController')
+const { check, validationResult, body } = require('express-validator');
+const { postRegisterUser, postLoginUser } = require('../controllers/homeController')
 const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob } = require('../controllers/job.Controllers')
 const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompany } = require('../controllers/company.Controllers')
 const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = require('../controllers/industry.Controllers')
 const { getUserList, createUser, updateUser, deleteUser } = require('../controllers/user.Controllers');
+const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
+
 const express = require('express');
-const { selectFields } = require('express-validator/src/field-selection');
 
 const router = express.Router();
-
-router.get('/', test)
-router.get('/tuan', getTuan)
-router.get('/abc', getImage)
 
 router.post('/register', [
     check('email').isEmail().normalizeEmail(),
@@ -112,6 +109,14 @@ router.put('/industry/update', updateIndustry);
 
 router.delete('/industry/delete', deleteIndustry);
 
+router.get('/area/area-list', getAreaList);
+
+router.post('/area/create', [
+    body('AreaName').isString().notEmpty()
+], createArea);
+
+router.put('/area/update', updateArea);
+
+router.delete('/area/delete', deleteArea);
 
 module.exports = router;
-

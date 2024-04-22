@@ -1,4 +1,5 @@
 const connect = require('../config/database');
+const { validationResult } = require('express-validator');
 
 const getIndustryList = (req, res) => {
     const query = 'SELECT * FROM INDUSTRY';
