@@ -31,6 +31,21 @@ const searchCompany = (req, res) => {
     });
 }
 
+const getCompanyById = (req, res) => {
+    const companyId = req.query.companyId;
+
+    const query = "Select * from COMPANY where ID = ?"
+
+    connect.query(query, [companyId], (error, results) => {
+        if (error) {
+            console.error('MySQL Error:', error);
+            res.status(500).json({ error: 'Server Error' });
+            return;
+        }
+        res.json(results.at(0));
+    });
+}
+
 const createCompany = (req, res) => {
     // Kiểm tra lỗi từ Express Validator
     const errors = validationResult(req);
@@ -104,5 +119,6 @@ module.exports = {
     searchCompany,
     createCompany,
     updateCompany,
-    deleteCompany
+    deleteCompany,
+    getCompanyById
 }

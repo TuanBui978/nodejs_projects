@@ -1,11 +1,12 @@
-const { check, validationResult } = require('express-validator');
+const { check, validationResult, body } = require('express-validator');
 const { getTuan, getImage, postRegisterUser, postLoginUser, test } = require('../controllers/homeController')
-const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob } = require('../controllers/job.Controllers')
-const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompany } = require('../controllers/company.Controllers')
+const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob, getJobListByCompany } = require('../controllers/job.Controllers')
+const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompany, getCompanyById } = require('../controllers/company.Controllers')
 const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = require('../controllers/industry.Controllers')
 const { getUserList, createUser, updateUser, deleteUser } = require('../controllers/user.Controllers');
 const express = require('express');
-const { selectFields } = require('express-validator/src/field-selection');
+const { selectFields } = require('express-validator/src/field-selection');  
+
 
 const router = express.Router();
 
@@ -45,6 +46,8 @@ router.get('/job/job-list-by-industry', getJobListByIndustry);
 router.get('/job/job-list-by-area', getJobListByArea);
 
 router.get('/job/job-list-by-name', getJobListByName);
+
+router.get('/job/job-list-by-company', getJobListByCompany);
 
 router.post('/job/create', [
     body('jobName').isString().notEmpty(),
@@ -107,6 +110,8 @@ router.get('/industry/industry-list', getIndustryList);
 router.post('/industry/create', [
     body('industryName').isString().notEmpty()
 ], createIndustry);
+
+router.get('/company/id', getCompanyById);
 
 router.put('/industry/update', updateIndustry);
 

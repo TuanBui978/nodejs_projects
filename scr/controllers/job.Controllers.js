@@ -98,6 +98,21 @@ const getJobListByName = (req, res) => {
     });
 };
 
+const getJobListByCompany = (req, res) => {
+    const companyId = req.query.companyId;
+    console.log(companyId);
+    const query = 'SELECT * FROM JOB WHERE COMPANY_ID = ?';
+    connect.query(query, [companyId], (error, results) => {
+        if (error) {
+            console.error('MySQL Error:', error);
+            res.status(500).json({ error: 'Server Error' });
+            return;
+        }
+
+        res.json(results);
+    });
+}
+
 const createJob = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -189,5 +204,6 @@ module.exports = {
     getJobListByName,
     createJob,
     updateJob,
-    deleteJob
+    deleteJob,
+    getJobListByCompany
 }

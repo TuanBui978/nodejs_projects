@@ -1,5 +1,7 @@
 const connect = require('../config/database');
 
+const { validationResult } = require('express-validator');
+
 const createUser = async (req, res) => {
     const { name, email, password, retype_password, gender, date_of_birth } = req.body;
 
