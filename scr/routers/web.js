@@ -5,6 +5,8 @@ const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompa
 const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = require('../controllers/industry.Controllers')
 const { getUserList, createUser, updateUser, deleteUser } = require('../controllers/user.Controllers');
 const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
+const { createCV, updateCV, deleteCV, getCVById } = require('../controllers/cv.Controllers');
+const { createUserJob, deleteUserJob } = require('../controllers/userjob.Controllers');
 
 const express = require('express');
 const { selectFields } = require('express-validator/src/field-selection');  
@@ -124,5 +126,48 @@ router.post('/area/create', [
 router.put('/area/update', updateArea);
 
 router.delete('/area/delete', deleteArea);
+
+
+router.post('/user/my-cv/create', [
+    body('Name').isString().notEmpty(),
+    body('date_of_birth').isDate().notEmpty(),
+    body('gender').isString().notEmpty(),
+    body('address').isString().notEmpty(),
+    body('city').isString().notEmpty(),
+    body('phone_number').isMobilePhone().notEmpty(),
+    body('linkedin_link').isURL(),
+    body('github_link').isURL(),
+    body('self_introduction').isString().notEmpty(),
+    body('experience').isString().notEmpty(),
+    body('skills').isString().notEmpty(),
+    body('education').isString().notEmpty(),
+    body('language_skills').isString(),
+    body('certificates').isString()
+], createCV);
+
+router.get('/user/my-cv/getCV', getCVById);
+
+router.put('/user/my-cv/update', [
+    body('Name').isString().notEmpty(),
+    body('date_of_birth').isDate().notEmpty(),
+    body('gender').isString().notEmpty(),
+    body('address').isString().notEmpty(),
+    body('city').isString().notEmpty(),
+    body('phone_number').isMobilePhone().notEmpty(),
+    body('linkedin_link').isURL(),
+    body('github_link').isURL(),
+    body('self_introduction').isString().notEmpty(),
+    body('experience').isString().notEmpty(),
+    body('skills').isString().notEmpty(),
+    body('education').isString().notEmpty(),
+    body('language_skills').isString(),
+    body('certificates').isString()
+], updateCV);
+
+router.delete('/user/my-cv/delete', deleteCV);
+
+router.post('/user/user-job/create', createUserJob);
+
+router.delete('/user/user-job/delete', deleteUserJob);
 
 module.exports = router;
