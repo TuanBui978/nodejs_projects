@@ -50,19 +50,20 @@ const updateUser = async (req, res) => {
     }
     
     const id = req.query.id;
-    const { name, email, gender, dateOfBirth } = req.body;
+    const { name, email, gender, dateOfBirth, avatar } = req.body;
 
     try {
         // Kiểm tra xem người dùng tồn tại hay không
         const Query = 'SELECT * FROM USER WHERE ID = ?';
+        
         const [User] = await connect.promise().query(Query, [id]);
 
         if (User.length === 0) {
             return res.status(404).json({ cod: "404", msg: 'User not found !' });
         }
         // Cập nhật thông tin người dùng
-        const updateUserQuery = 'UPDATE USER SET NAME = ?, EMAIL = ?, GENDER = ?, DATE_OF_BIRTH = str_to_date(?, "%Y-%m-%d"), UPDATED_AT = NOW() WHERE ID = ?';
-        await connect.promise().query(updateUserQuery, [name, email, gender, dateOfBirth, id]);
+        const updateUserQuery = 'UPDATE USER SET NAME = ?, EMAIL = ?, GENDER = ?, DATE_OF_BIRTH = str_to_date(?, "%Y-%m-%d"), AVATAR = ?, UPDATED_AT = NOW() WHERE ID = ?';
+        await connect.promise().query(updateUserQuery, [name, email, gender, dateOfBirth, avatar, id ]);
 
 
         res.status(200).json({ cod: "200", msg: 'Update user successfully !' });

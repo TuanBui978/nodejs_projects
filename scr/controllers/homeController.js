@@ -25,10 +25,10 @@ const test = (req, res) => {
 const postRegisterUser = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array().at(0) });
+        return res.status(422).json(errors);
     }
     
-    const { name, email, password, retype_password, gender, date_of_birth } = req.body;
+    const { name, email, password, retype_password, gender, dateOfBirth } = req.body;
     // Kiểm tra xem người dùng đã tồn tại hay chưa
     const checkUserQuery = 'SELECT * FROM USER WHERE email = ?';
     connect.query(checkUserQuery, [email], (err, results) => {
@@ -49,7 +49,7 @@ const postRegisterUser = (req, res) => {
             }
 
             const insertUserQuery = 'INSERT INTO USER (NAME, EMAIL, PASSWORD, GENDER, DATE_OF_BIRTH, PRIVILEGE_ID, CREATE_AT) VALUES (?, ?, ?, ?, str_to_date(?, "%d-%m-%Y"),0, NOW())';
-            connect.query(insertUserQuery, [name, email, hashedPassword, gender, date_of_birth], (err, result) => {
+            connect.query(insertUserQuery, [name, email, hashedPassword, gender, dateOfBirth], (err, result) => {
                 if (err) {
                     console.log(err.message);
                     return res.status(500).json({ cod: "500", msg: 'Failed to register user !' });
@@ -64,7 +64,7 @@ const postRegisterUser = (req, res) => {
 const postLoginUser = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array().at(0) });
+        return res.status(422).json(errors);
     }
 
     const { email, password } = req.body;

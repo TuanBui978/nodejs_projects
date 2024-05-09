@@ -100,7 +100,6 @@ const getJobListByName = (req, res) => {
 
 const getJobListByCompany = (req, res) => {
     const companyId = req.query.companyId;
-    console.log(companyId);
     const query = 'SELECT * FROM JOB WHERE COMPANY_ID = ?';
     connect.query(query, [companyId], (error, results) => {
         if (error) {
