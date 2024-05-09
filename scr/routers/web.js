@@ -6,6 +6,7 @@ const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = requ
 const { getUserList, createUser, updateUser, deleteUser } = require('../controllers/user.Controllers');
 const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
 const { createCV, updateCV, deleteCV, getCVById } = require('../controllers/cv.Controllers');
+const { createUserJob, deleteUserJob } = require('../controllers/userjob.Controllers');
 
 const express = require('express');
 const { selectFields } = require('express-validator/src/field-selection');  
@@ -164,5 +165,9 @@ router.put('/user/my-cv/update', [
 ], updateCV);
 
 router.delete('/user/my-cv/delete', deleteCV);
+
+router.post('/user/user-job/create', createUserJob);
+
+router.delete('/user/user-job/delete', deleteUserJob);
 
 module.exports = router;
