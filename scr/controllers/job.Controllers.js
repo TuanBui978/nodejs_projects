@@ -112,9 +112,25 @@ const getJobListByCompany = (req, res) => {
     });
 }
 
+
+const getJobListById = (req, res) => {
+    const id = req.query.id;
+    const query = 'SELECT * FROM JOB WHERE JOB_ID = ?';
+    connect.query(query, [id], (error, results) => {
+        if (error) {
+            console.error('MySQL Error:', error);
+            res.status(500).json({ error: 'Server Error' });
+            return;
+        }
+
+        res.json(results.at(0));
+    });
+}
+
 const createJob = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+    
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -128,6 +144,7 @@ const createJob = async (req, res) => {
             const companyId = Company[0].ID;
             insertJob(companyId);
         } else {
+            console.log("asdasd");
             // Nếu không tồn tại, tạo mới công ty và thêm công việc
             const companyData = {
                 companyName: COMPANY_NAME,
@@ -138,6 +155,7 @@ const createJob = async (req, res) => {
             const companyResponse = await axios.post(`http://localhost:${PORT}/company/create`, companyData);
             const companyId = companyResponse.data.companyId;
             insertJob(companyId);
+
         }
     } catch (err) {
         console.error('Error creating company:', err);
@@ -148,8 +166,7 @@ const createJob = async (req, res) => {
 
         jobData.COMPANY_ID = companyId;
         delete jobData.COMPANY_NAME;
-
-        const insertQuery = `INSERT INTO JOB SET ?, POSTED_DATE = DATE_FORMAT(NOW(), '%d-%m-%Y %H:%i')`;
+        const insertQuery = `INSERT INTO JOB SET ?, POSTED_DATE = DATE_FORMAT(NOW(), '%d-%m-%Y %H:%i'), DEADLINE = DATE_FORMAT(NOW(), '%d-%m-%Y %H:%i')`;
 
         connect.query(insertQuery, jobData, (err, result) => {
             if (err) {
@@ -164,6 +181,7 @@ const createJob = async (req, res) => {
 const updateJob = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        
         return res.status(400).json({ errors: errors.array() });
     }
     
@@ -204,5 +222,6 @@ module.exports = {
     createJob,
     updateJob,
     deleteJob,
-    getJobListByCompany
+    getJobListByCompany,
+    getJobListById
 }

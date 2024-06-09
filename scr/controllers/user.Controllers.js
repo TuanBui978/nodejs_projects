@@ -88,9 +88,42 @@ const deleteUser = async (req, res) => {
         return res.status(500).send({ error: 'Error deleting user', message: err.message });
     }
 }
+
+const getUserListByName = (req, res) => {
+    const jobName = req.query.userName;
+
+    const query = 'SELECT * FROM USER WHERE NAME LIKE ?';
+    connect.query(query, [`%${jobName}%`], (error, results) => {
+        if (error) {
+            console.error('MySQL Error:', error);
+            res.status(500).json({ error: 'Server Error' });
+            return;
+        }
+
+        res.json(results);
+    });
+};
+
+const toAdmin = (req, res) => {
+    const id = req.query.id;
+    try {
+        const query = 'UPDATE USER SET PRIVILEGE_ID = 1, UPDATED_AT = NOW() WHERE ID = ?'
+        connect.promise().query(query, [id]);
+        res.status(200).json({ cod: "200", msg: 'Update user successfully !' });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error)
+    }
+
+   
+}
+
+
 module.exports = {
     createUser,
     getUserList,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserListByName,
+    toAdmin
 }

@@ -98,10 +98,13 @@ const postLoginUser = (req, res) => {
     });
 }
 
+
+
 module.exports = {
     getTuan,
     getImage,
     postRegisterUser,
     postLoginUser,
-    test
+    test,
+    
 }

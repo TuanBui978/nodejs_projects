@@ -1,12 +1,14 @@
 const { check, validationResult, body } = require('express-validator');
 const { getTuan, getImage, postRegisterUser, postLoginUser, test } = require('../controllers/homeController')
-const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob, getJobListByCompany } = require('../controllers/job.Controllers')
+const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob, getJobListByCompany, getJobListById} = require('../controllers/job.Controllers')
 const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompany, getCompanyById } = require('../controllers/company.Controllers')
 const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = require('../controllers/industry.Controllers')
-const { getUserList, createUser, updateUser, deleteUser } = require('../controllers/user.Controllers');
+const { getUserList, createUser, updateUser, deleteUser, getUserListByName, toAdmin } = require('../controllers/user.Controllers');
 const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
-const { createCV, updateCV, deleteCV, getCVById } = require('../controllers/cv.Controllers');
-const { createUserJob, deleteUserJob } = require('../controllers/userjob.Controllers');
+const { createCV, updateCV, deleteCV, getCVById, uploadCV, getFile } = require('../controllers/cv.Controllers');
+const { createUserJob, deleteUserJob, findUserJob, getApplyList } = require('../controllers/userjob.Controllers');
+const multer = require('multer');
+const appRoot = require('app-root-path')
 
 const express = require('express');
 const { selectFields } = require('express-validator/src/field-selection');  
@@ -14,6 +16,32 @@ const { selectFields } = require('express-validator/src/field-selection');
 
 const router = express.Router();
 
+const PDFFilter = function(req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(pdf)$/)) {
+        req.fileValidationError = 'Only PDF files are allowed!';
+        return cb(new Error('Only PDF files are allowed!'), false);
+    }
+    if (/[^\u0000-\u00ff]/.test(file.originalname)) {
+        return cb(new Error('Path have unicode!'), false);
+    }
+    cb(null, true);
+};
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, appRoot.path + '\\scr\\public\\image');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + file.originalname);
+    }
+});
+
+let upload = multer({storage: storage, fileFilter: PDFFilter});
+
+router.get('/cv/my-cv', getFile);
 router.post('/register', [
     check('email').isEmail().normalizeEmail(),
     check('password').isLength({ min: 8 })
@@ -49,50 +77,17 @@ router.get('/job/job-list-by-name', getJobListByName);
 
 router.get('/job/job-list-by-company', getJobListByCompany);
 
-router.post('/job/create', [
-    body('jobName').isString().notEmpty(),
-    body('industry').isString().notEmpty(),
-    body('location').isString().notEmpty(),
-    body('enrollmentLocation').isString().notEmpty(),
-    body('salary').isString().notEmpty(),
-    body('genderRequirement').isString().notEmpty(),
-    body('numberOfRecruitment').isString().notEmpty(),
-    body('ageRequirement').isString().notEmpty(),
-    body('probationTime').isString().notEmpty(),
-    body('workWay').isString().notEmpty(),
-    body('experienceRequirement').isString().notEmpty(),
-    body('degreeRequirement').isString().notEmpty(),
-    body('benefits').isString().notEmpty(),
-    body('jobDescription').isString().notEmpty(),
-    body('jobRequirement').isString().notEmpty(),
-    body('deadline').isDate().notEmpty()
+router.get('/job/job-list-by-id', getJobListById);
 
-], createJob);
+router.post('/job/create', createJob);
 
-router.put('/job/update', [
-    body('jobName').isString().notEmpty(),
-    body('industry').isString().notEmpty(),
-    body('location').isString().notEmpty(),
-    body('enrollmentLocation').isString().notEmpty(),
-    body('salary').isString().notEmpty(),
-    body('genderRequirement').isString().notEmpty(),
-    body('numberOfRecruitment').isString().notEmpty(),
-    body('ageRequirement').isString().notEmpty(),
-    body('probationTime').isString().notEmpty(),
-    body('workWay').isString().notEmpty(),
-    body('experienceRequirement').isString().notEmpty(),
-    body('degreeRequirement').isString().notEmpty(),
-    body('benefits').isString().notEmpty(),
-    body('jobDescription').isString().notEmpty(),
-    body('jobRequirement').isString().notEmpty(),
-    body('deadline').isDate().notEmpty()
-], updateJob)
+router.put('/job/update', updateJob)
 
 router.delete('/job/delete', deleteJob);
 
 router.post('/company/create', [
     body('companyName').isString().notEmpty(),
-    body('location').isString().notEmpty(),
+    body('companyLocation').isString().notEmpty(),
     body('staffSize').isString().notEmpty(),
     body('companyDescription').isString().notEmpty()
 ], createCompany);
@@ -106,6 +101,8 @@ router.put('/company/update', updateCompany);
 router.delete('/company/delete', deleteCompany);
 
 router.get('/industry/industry-list', getIndustryList);
+
+
 
 router.post('/industry/create', [
     body('industryName').isString().notEmpty()
@@ -169,5 +166,17 @@ router.delete('/user/my-cv/delete', deleteCV);
 router.post('/user/user-job/create', createUserJob);
 
 router.delete('/user/user-job/delete', deleteUserJob);
+
+router.get('/user/user-job/my-apply-job', findUserJob);
+
+router.get('/user/user-job/my-apply-job-list', getApplyList);
+
+router.get('/user/search', getUserListByName);
+
+router.put('/user/to-admin', toAdmin);
+
+router.post('/cv/upload', upload.single('file'), uploadCV);
+
+
 
 module.exports = router;

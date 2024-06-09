@@ -32,7 +32,40 @@ const deleteUserJob = async (req, res) => {
         res.status(500).json({ cod: "500", msg: 'Failed to delete user job !' });
     }
 };
+
+const findUserJob = async (req, res) => {
+    const userID = req.query.userID;
+    const jobID = req.query.jobID;
+
+    try {
+        const query = "SELECT * FROM USERJOB WHERE USER_ID = ? and JOB_ID = ?";
+        const [result] = await connect.promise().query(query, [userID, jobID]);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ cod: "500", msg: 'Failed to get user job !' });
+    }
+
+};
+
+const getApplyList = async (req, res) => {
+    const userID = req.query.userID;
+    
+
+    try {
+        const query = "SELECT * FROM USERJOB WHERE USER_ID = ? ";
+        const [result] = await connect.promise().query(query, [userID]);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ cod: "500", msg: 'Failed to get user job list!' });
+    }
+
+};
+
 module.exports = {
     createUserJob,
-    deleteUserJob
+    deleteUserJob,
+    findUserJob,
+    getApplyList
 }

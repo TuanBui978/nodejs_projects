@@ -50,10 +50,14 @@ const createCompany = (req, res) => {
     // Kiểm tra lỗi từ Express Validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log(errors);
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { companyName, location, staffSize, companyDescription } = req.body;
+    const { companyName, companyLocation, staffSize, companyDescription } = req.body;
+
+    
+    console.log(1);
 
     // Kiểm tra xem công ty đã tồn tại trong CSDL chưa
     const checkQuery = 'SELECT * FROM COMPANY WHERE COMPANY_NAME = ?';
@@ -69,7 +73,7 @@ const createCompany = (req, res) => {
         }
         // Nếu công ty chưa tồn tại, tiến hành thêm mới
         const insertQuery = 'INSERT INTO COMPANY (COMPANY_NAME, LOCATION, STAFF_SIZE, COMPANY_DESCRIPTION) VALUES (?, ?, ?, ?)';
-        connect.query(insertQuery, [companyName, location, staffSize, companyDescription], (insertError, insertResults) => {
+        connect.query(insertQuery, [companyName, companyLocation, staffSize, companyDescription], (insertError, insertResults) => {
             if (insertError) {
                 console.error('MySQL Error:', insertError);
                 res.status(500).json({ error: 'Server Error' });
@@ -82,10 +86,10 @@ const createCompany = (req, res) => {
 
 const updateCompany = async (req, res) => {
     const  id  = req.query.id;
-    const { companyName, staffSize, companyDescription } = req.body;
+    const { companyName, companyLocation, staffSize, companyDescription } = req.body;
 
     try {
-        const result = await connect.promise().query('UPDATE COMPANY SET COMPANY_NAME = ?, STAFF_SIZE = ?, COMPANY_DESCRIPTION = ? WHERE ID = ?', [companyName, staffSize, companyDescription, id]);
+        const result = await connect.promise().query('UPDATE COMPANY SET COMPANY_NAME = ?, LOCATION = ?, STAFF_SIZE = ?, COMPANY_DESCRIPTION = ? WHERE ID = ?', [companyName, companyLocation, staffSize, companyDescription, id]);
         if (result[0].changedRows === 0) {
             return res.status(404).send({ error: 'Company not found' });
         }
