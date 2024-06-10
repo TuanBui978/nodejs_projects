@@ -16,10 +16,6 @@ const getCompanyList = (req, res) => {
 const searchCompany = (req, res) => {
     const companyName = req.query.companyName;
 
-    if (!companyName) {
-        return res.status(400).json({ error: 'Missing companyName parameter' });
-    }
-
     const query = 'SELECT * FROM COMPANY WHERE COMPANY_NAME LIKE ?';
     connect.query(query, [`%${companyName}%`], (error, results) => {
         if (error) {

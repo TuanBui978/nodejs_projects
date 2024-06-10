@@ -6,7 +6,7 @@ const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = requ
 const { getUserList, createUser, updateUser, deleteUser, getUserListByName, toAdmin } = require('../controllers/user.Controllers');
 const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
 const { createCV, updateCV, deleteCV, getCVById, uploadCV, getFile } = require('../controllers/cv.Controllers');
-const { createUserJob, deleteUserJob, findUserJob, getApplyList } = require('../controllers/userjob.Controllers');
+const { createUserJob, deleteUserJob, findUserJob, getApplyList, getUserListByJob } = require('../controllers/userjob.Controllers');
 const multer = require('multer');
 const appRoot = require('app-root-path')
 
@@ -177,6 +177,7 @@ router.put('/user/to-admin', toAdmin);
 
 router.post('/cv/upload', upload.single('file'), uploadCV);
 
+router.get('/job/apply-list', getUserListByJob);
 
 
 module.exports = router;

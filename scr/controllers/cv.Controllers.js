@@ -75,6 +75,20 @@ const updateCV = async (req, res) => {
 const deleteCV = async (req, res) => {
     const id = req.query.id;
     try {
+        const userIDQuery = 'SELECT PATH FROM CV WHERE ID = ?';
+        const [pathRows] = await connect.promise().query(userIDQuery, [id]);
+        if (pathRows.length == 0) {
+            return res.status(400).send({error: "Not found"});
+        }
+        const path = pathRows[0].PATH;
+        const isEnd = false;
+        fs.unlink(path, (err)=>{
+            if (err) {
+                isEnd = true;
+               return console.log(err);
+            }
+        });
+        if (isEnd) return res.status(500).send({ error: 'fails on delete CV' });;
         const [result] = await connect.promise().query(`DELETE FROM CV WHERE ID = ?`, [id]);
         if (result.affectedRows === 0) {
             return res.status(404).send({ error: 'CV not found' });
@@ -138,7 +152,6 @@ const getFile = async (req, res) => {
     const userIDQuery = 'SELECT PATH FROM CV WHERE ID = ?';
     const [pathRows] = await connect.promise().query(userIDQuery, [ID]);
     if (pathRows.length == 0) {
-        console.log("asdasdasd");
         return res.status(400).send({error: "Not found"});
     }
     const path = pathRows[0].PATH;
@@ -149,6 +162,8 @@ const getFile = async (req, res) => {
     });
     // res.download(path);
 }
+
+
 
 
 module.exports = {

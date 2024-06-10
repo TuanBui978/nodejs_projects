@@ -50,8 +50,6 @@ const findUserJob = async (req, res) => {
 
 const getApplyList = async (req, res) => {
     const userID = req.query.userID;
-    
-
     try {
         const query = "SELECT * FROM USERJOB WHERE USER_ID = ? ";
         const [result] = await connect.promise().query(query, [userID]);
@@ -62,10 +60,22 @@ const getApplyList = async (req, res) => {
     }
 
 };
+const getUserListByJob = async (req, res) => {
+    const jobId = req.query.id;
+    try {
+        const query = "SELECT USER.* FROM USERJOB, USER WHERE USER.ID = USERJOB.USER_ID and JOB_ID = ? ";
+        const [result] = await connect.promise().query(query, [jobId]);
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ cod: "500", msg: 'Failed to get user list!' });
+    }
+}
 
 module.exports = {
     createUserJob,
     deleteUserJob,
     findUserJob,
-    getApplyList
+    getApplyList,
+    getUserListByJob
 }
