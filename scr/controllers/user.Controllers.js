@@ -113,9 +113,21 @@ const toAdmin = (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(500).send(error)
-    }
+    } 
+}
 
-   
+const getUserById = (req, res) => {
+    const id = req.query.id;
+
+    const query = 'SELECT * FROM USER WHERE ID = ?';
+    connect.query(query, [id], (error, results) => {
+        if (error) {
+            console.error('MySQL Error:', error);
+            res.status(500).json({ error: 'Server Error' });
+            return;
+        }
+        res.json(results[0]);
+    });
 }
 
 
@@ -127,5 +139,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getUserListByName,
-    toAdmin
+    toAdmin, 
+    getUserById
 }

@@ -3,7 +3,7 @@ const { getTuan, getImage, postRegisterUser, postLoginUser, test } = require('..
 const { getJobList, getJobListByIndustry, getJobListByArea, getJobListByName, createJob, updateJob, deleteJob, getJobListByCompany, getJobListById} = require('../controllers/job.Controllers')
 const { getCompanyList, searchCompany, createCompany, updateCompany, deleteCompany, getCompanyById } = require('../controllers/company.Controllers')
 const { getIndustryList, updateIndustry, deleteIndustry, createIndustry } = require('../controllers/industry.Controllers')
-const { getUserList, createUser, updateUser, deleteUser, getUserListByName, toAdmin } = require('../controllers/user.Controllers');
+const { getUserList, createUser, updateUser, deleteUser, getUserListByName, toAdmin, getUserById } = require('../controllers/user.Controllers');
 const { getAreaList, createArea, updateArea, deleteArea } = require('../controllers/area.Controllers');
 const { createCV, updateCV, deleteCV, getCVById, uploadCV, getFile } = require('../controllers/cv.Controllers');
 const { createUserJob, deleteUserJob, findUserJob, getApplyList, getUserListByJob } = require('../controllers/userjob.Controllers');
@@ -178,6 +178,8 @@ router.put('/user/to-admin', toAdmin);
 router.post('/cv/upload', upload.single('file'), uploadCV);
 
 router.get('/job/apply-list', getUserListByJob);
+
+router.get('/user', getUserById);
 
 
 module.exports = router;
